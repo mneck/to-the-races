@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: to-the-races
+  datasource:
+    url: jdbc:postgresql://localhost:5432/totheraces
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 20000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# Stripe - use test keys from https://dashboard.stripe.com/test/apikeys
+stripe:
+  secret-key: ${STRIPE_SECRET_KEY:sk_test_placeholder}
+  publishable-key: ${STRIPE_PUBLISHABLE_KEY:pk_test_placeholder}
+  success-url: ${STRIPE_SUCCESS_URL:http://localhost:5173/checkout/success}
+  cancel-url: ${STRIPE_CANCEL_URL:http://localhost:5173/checkout}
+
+# CORS - allow Vite dev server
+cors:
+  allowed-origins: http://localhost:5173
+
+# JWT
+jwt:
+  secret: ${JWT_SECRET:your-256-bit-secret-key-for-jwt-signing-change-in-production}
+  expiration-ms: 86400000
