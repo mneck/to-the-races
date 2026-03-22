@@ -1,6 +1,8 @@
-# To The Races
+# Open Loupe Concepts
 
-A full-stack application for e2e testing practice with JPA, JDBC, PostgreSQL, Spring Boot, and Vite + React + TypeScript. Features login/registration and Stripe Checkout integration.
+*Open-loop thinking, loupe-level inspection.*
+
+A full-stack e-commerce application for Open Loupe Concepts GmbH, selling magnifying glasses. Built with JPA, JDBC, PostgreSQL, Spring Boot, and Vite + React + TypeScript. Features login/registration and Stripe Checkout integration. Useful for e2e testing practice.
 
 ## Tech Stack
 
@@ -9,16 +11,33 @@ A full-stack application for e2e testing practice with JPA, JDBC, PostgreSQL, Sp
 
 ## Prerequisites
 
-- Java 21+
-- Node.js 18+
-- PostgreSQL (local or Docker)
-- [Stripe account](https://dashboard.stripe.com) (test mode)
+- **Docker only**: Docker + Docker Compose (for the full stack below)
+- **Local dev**: Java 21+, Node.js 18+, PostgreSQL
+- [Stripe account](https://dashboard.stripe.com) (test mode) — needed for checkout
 
-## Setup
+## Run everything with Docker Compose
+
+Builds the Spring Boot backend and Vite frontend, runs PostgreSQL, and serves the app behind nginx (API proxied at `/api`).
+
+```bash
+# Optional: copy and set Stripe keys + port
+# cp .env.example .env
+
+docker compose up --build
+```
+
+Open **http://localhost:3000** (or set `WEB_PORT` in `.env` / your environment).
+
+- Set `STRIPE_SECRET_KEY` (and optionally `STRIPE_PUBLISHABLE_KEY`) in `.env` or your shell for real Stripe test checkout; otherwise checkout may fail until keys are set.
+- If you change `WEB_PORT`, Stripe redirect URLs and CORS are updated automatically via compose interpolation.
+
+Stop: `docker compose down`
+
+## Local development setup
 
 ### 1. PostgreSQL
 
-Using Docker Compose (recommended):
+Using Docker Compose (database only):
 
 ```bash
 docker compose up -d postgres

@@ -28,8 +28,8 @@ export default function LoginPage() {
   return (
     <div className="login-page">
       <div className="login-card">
-        <h1>To The Races</h1>
-        <p className="subtitle">Sign in to your account</p>
+        <h1>Open Loupe Concepts</h1>
+        <p className="subtitle">Open-loop thinking, loupe-level inspection</p>
 
         <form onSubmit={handleSubmit} className="login-form">
           {error && <div className="error-message" data-testid="login-error">{error}</div>}

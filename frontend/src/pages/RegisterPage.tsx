@@ -30,7 +30,7 @@ export default function RegisterPage() {
     <div className="login-page">
       <div className="login-card">
         <h1>Create Account</h1>
-        <p className="subtitle">Join To The Races</p>
+        <p className="subtitle">Open-loop thinking, loupe-level inspection</p>
 
         <form onSubmit={handleSubmit} className="login-form">
           {error && <div className="error-message" data-testid="register-error">{error}</div>}

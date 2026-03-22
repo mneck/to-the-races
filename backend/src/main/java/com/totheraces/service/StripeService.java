@@ -42,6 +42,7 @@ public class StripeService {
                             .setProductData(
                                 SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                     .setName(request.productName())
+                                    .setDescription("Open Loupe Concepts GmbH — Open-loop thinking, loupe-level inspection")
                                     .build()
                             )
                             .build()

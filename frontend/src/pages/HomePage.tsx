@@ -8,7 +8,7 @@ export default function HomePage() {
   return (
     <div className="home-page">
       <header className="home-header">
-        <h1>To The Races</h1>
+        <h1>Open Loupe Concepts</h1>
         <div className="nav">
           <span className="user-info">Welcome, {user?.displayName || user?.email}</span>
           <Link to="/checkout" className="nav-link">
@@ -22,8 +22,8 @@ export default function HomePage() {
 
       <main className="home-main">
         <div className="hero">
-          <h2>E2E Testing Practice</h2>
-          <p>Use this app to practice end-to-end testing with login and Stripe checkout flows.</p>
+          <h2>Magnifying Glasses</h2>
+          <p>Open-loop thinking, loupe-level inspection. Browse our collection of precision magnifiers.</p>
           <Link to="/checkout" className="cta-button" data-testid="go-to-checkout">
             Go to Checkout
           </Link>

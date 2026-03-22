@@ -10,7 +10,7 @@ export default function CheckoutSuccessPage() {
   return (
     <div className="success-page">
       <header className="checkout-header">
-        <h1>To The Races</h1>
+        <h1>Open Loupe Concepts</h1>
         <div className="user-menu">
           <span className="user-email">{user?.displayName || user?.email}</span>
           <button onClick={logout} className="logout-btn">

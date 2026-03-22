@@ -5,8 +5,14 @@ import './CheckoutPage.css';
 
 export default function CheckoutPage() {
   const { user, logout } = useAuth();
-  const [productName, setProductName] = useState('Test Product');
-  const [amount, setAmount] = useState('9.99');
+  const productPrices: Record<string, string> = {
+    'Professional Loupe Magnifier': '49.99',
+    'Classic Hand Magnifier': '24.99',
+    'Illuminated LED Loupe': '79.99',
+    'Pocket Magnifier Set': '14.99',
+  };
+  const [productName, setProductName] = useState('Professional Loupe Magnifier');
+  const [amount, setAmount] = useState(productPrices['Professional Loupe Magnifier']);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -17,13 +23,13 @@ export default function CheckoutPage() {
     try {
       const amountInCents = Math.round(parseFloat(amount) * 100);
       if (isNaN(amountInCents) || amountInCents < 50) {
-        setError('Amount must be at least $0.50');
+        setError('Amount must be at least €0.50');
         return;
       }
       const { url } = await checkoutApi.createSession(
         productName,
         amountInCents,
-        'usd'
+        'eur'
       );
       window.location.href = url;
     } catch (err) {
@@ -36,7 +42,7 @@ export default function CheckoutPage() {
   return (
     <div className="checkout-page">
       <header className="checkout-header">
-        <h1>To The Races</h1>
+        <h1>Open Loupe Concepts</h1>
         <div className="user-menu">
           <span className="user-email">{user?.displayName || user?.email}</span>
           <button onClick={logout} className="logout-btn">
@@ -49,7 +55,7 @@ export default function CheckoutPage() {
         <div className="checkout-card">
           <h2>Checkout</h2>
           <p className="checkout-desc">
-            Complete your purchase using Stripe test checkout. Use card 4242 4242 4242 4242 for successful payment.
+            Complete your magnifier purchase. Use card 4242 4242 4242 4242 for test payments.
           </p>
 
           <form onSubmit={handleCheckout} className="checkout-form">
@@ -59,17 +65,24 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            <label htmlFor="productName">Product Name</label>
-            <input
+            <label htmlFor="productName">Magnifier</label>
+            <select
               id="productName"
-              type="text"
               value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-              required
+              onChange={(e) => {
+                const selected = e.target.value;
+                setProductName(selected);
+                setAmount(productPrices[selected] ?? amount);
+              }}
               data-testid="checkout-product-name"
-            />
+            >
+              <option value="Professional Loupe Magnifier">Professional Loupe Magnifier — €49.99</option>
+              <option value="Classic Hand Magnifier">Classic Hand Magnifier — €24.99</option>
+              <option value="Illuminated LED Loupe">Illuminated LED Loupe — €79.99</option>
+              <option value="Pocket Magnifier Set">Pocket Magnifier Set — €14.99</option>
+            </select>
 
-            <label htmlFor="amount">Amount (USD)</label>
+            <label htmlFor="amount">Amount (EUR)</label>
             <input
               id="amount"
               type="number"

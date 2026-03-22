@@ -86,7 +86,8 @@
   color: #c0c0c0;
 }
 
-.checkout-form input {
+.checkout-form input,
+.checkout-form select {
   padding: 0.75rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
@@ -95,9 +96,15 @@
   font-size: 1rem;
 }
 
-.checkout-form input:focus {
+.checkout-form input:focus,
+.checkout-form select:focus {
   outline: none;
   border-color: #6366f1;
+}
+
+.checkout-form select {
+  cursor: pointer;
+  appearance: auto;
 }
 
 .checkout-form button {
