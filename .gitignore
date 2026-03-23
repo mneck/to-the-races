@@ -14,8 +14,6 @@ backend/target/
 
 # Environment
 .env
-.env.local
-.env.*.local
 
 # OS
 .DS_Store
