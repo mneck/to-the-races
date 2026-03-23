@@ -1,6 +1,6 @@
 import { useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import './CheckoutSuccessPage.css';
+import './pages.css';
 
 export default function CheckoutSuccessPage() {
   const [searchParams] = useSearchParams();
@@ -29,7 +29,7 @@ export default function CheckoutSuccessPage() {
               Session ID: {sessionId}
             </p>
           )}
-          <Link to="/checkout" className="back-link">
+          <Link to="/checkout" className="back-link-btn">
             Back to Checkout
           </Link>
         </div>

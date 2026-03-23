@@ -1,18 +1,18 @@
 import { useState } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { checkoutApi } from '../api/client';
-import './CheckoutPage.css';
+import { products, getProductByName } from '../data/products';
+import './pages.css';
 
 export default function CheckoutPage() {
   const { user, logout } = useAuth();
-  const productPrices: Record<string, string> = {
-    'Professional Loupe Magnifier': '49.99',
-    'Classic Hand Magnifier': '24.99',
-    'Illuminated LED Loupe': '79.99',
-    'Pocket Magnifier Set': '14.99',
-  };
-  const [productName, setProductName] = useState('Professional Loupe Magnifier');
-  const [amount, setAmount] = useState(productPrices['Professional Loupe Magnifier']);
+  const [searchParams] = useSearchParams();
+
+  const initialName = searchParams.get('product') ?? products[0].name;
+  const initialProduct = getProductByName(initialName) ?? products[0];
+
+  const [selectedProduct, setSelectedProduct] = useState(initialProduct);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -21,13 +21,9 @@ export default function CheckoutPage() {
     setError('');
     setIsLoading(true);
     try {
-      const amountInCents = Math.round(parseFloat(amount) * 100);
-      if (isNaN(amountInCents) || amountInCents < 50) {
-        setError('Amount must be at least €0.50');
-        return;
-      }
+      const amountInCents = Math.round(parseFloat(selectedProduct.price) * 100);
       const { url } = await checkoutApi.createSession(
-        productName,
+        selectedProduct.name,
         amountInCents,
         'eur'
       );
@@ -68,31 +64,28 @@ export default function CheckoutPage() {
             <label htmlFor="productName">Magnifier</label>
             <select
               id="productName"
-              value={productName}
+              value={selectedProduct.name}
               onChange={(e) => {
-                const selected = e.target.value;
-                setProductName(selected);
-                setAmount(productPrices[selected] ?? amount);
+                const found = getProductByName(e.target.value);
+                if (found) setSelectedProduct(found);
               }}
               data-testid="checkout-product-name"
             >
-              <option value="Professional Loupe Magnifier">Professional Loupe Magnifier — €49.99</option>
-              <option value="Classic Hand Magnifier">Classic Hand Magnifier — €24.99</option>
-              <option value="Illuminated LED Loupe">Illuminated LED Loupe — €79.99</option>
-              <option value="Pocket Magnifier Set">Pocket Magnifier Set — €14.99</option>
+              {products.map((p) => (
+                <option key={p.id} value={p.name}>
+                  {p.name}
+                </option>
+              ))}
             </select>
 
-            <label htmlFor="amount">Amount (EUR)</label>
-            <input
-              id="amount"
-              type="number"
-              step="0.01"
-              min="0.5"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              required
-              data-testid="checkout-amount"
-            />
+            <label>Price</label>
+            <div className="checkout-price-display" data-testid="checkout-amount">
+              €{selectedProduct.price}
+            </div>
+
+            <Link to="/products" className="checkout-back-link">
+              ← Back to Products
+            </Link>
 
             <button
               type="submit"
