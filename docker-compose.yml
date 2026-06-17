@@ -1,0 +1,87 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: to-the-races-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - JWT_SECRET=your-super-secret-key-for-testing-at-least-32-chars
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/api/subscription"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: to-the-races-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY:-pk_test_dummy}
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: >
+      sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  cypress-tests:
+    image: cypress/browsers:node-20.11.0-chrome-120.0.6099.129-ff-121.0.2221-edge-120.0.2248
+    container_name: to-the-races-cypress
+    depends_on:
+      - frontend
+    volumes:
+      - ./frontend:/e2e
+      - ./test-results:/e2e/test-results
+    working_dir: /e2e
+    command: >
+      sh -c "npm install && npm run cypress:run"
+    environment:
+      - CYPRESS_BASE_URL=http://host.docker.internal:3000
+    profiles:
+      - test
+
+  playwright-tests:
+    image: mcr.microsoft.com/playwright:v1.40.0-focal
+    container_name: to-the-races-playwright
+    depends_on:
+      - frontend
+    volumes:
+      - ./frontend:/e2e
+      - ./test-results:/e2e/test-results
+    working_dir: /e2e
+    command: >
+      sh -c "npm install && npx playwright test"
+    environment:
+      - PLAYWRIGHT_BASE_URL=http://host.docker.internal:3000
+    profiles:
+      - test
+
+  serenity-tests:
+    image: maven:3.9.6-eclipse-temurin-21
+    container_name: to-the-races-serenity
+    depends_on:
+      - frontend
+      - backend
+    volumes:
+      - ./serenity-tests:/e2e
+      - ./test-results:/e2e/target
+    working_dir: /e2e
+    command: >
+      sh -c "mvn test"
+    environment:
+      - BASE_URL=http://host.docker.internal:3000
+    profiles:
+      - test
+
+volumes:
+  test-results:
